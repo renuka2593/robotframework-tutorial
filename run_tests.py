@@ -57,27 +57,63 @@ def run_unit_tests(directory='tests/unit', coverage=False):
     return subprocess.call(cmd)
 
 
+def initialize_browser_library():
+    """
+    Initialize the Browser library if not already initialized.
+    
+    Returns:
+        int: Return code from the initialization
+    """
+    print("Checking if Browser library needs to be initialized...")
+    cmd = ['rfbrowser', 'show-trace']
+    try:
+        result = subprocess.call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if result != 0:
+            print("Initializing Browser library...")
+            init_cmd = ['rfbrowser', 'init']
+            return subprocess.call(init_cmd)
+        print("Browser library is already initialized.")
+        return 0
+    except Exception as e:
+        print(f"Error checking Browser library: {e}")
+        print("Attempting to initialize Browser library...")
+        init_cmd = ['rfbrowser', 'init']
+        return subprocess.call(init_cmd)
+
+
 def main():
     """Parse arguments and run tests."""
     parser = argparse.ArgumentParser(description='Run tests for the UI Test Automation Framework')
-    parser.add_argument('--type', choices=['web', 'desktop', 'unit', 'all'], default='all',
-                        help='Type of tests to run (web, desktop, unit, or all)')
+    parser.add_argument('--type', choices=['web', 'browser', 'desktop', 'unit', 'all'], default='all',
+                        help='Type of tests to run (web, browser, desktop, unit, or all)')
     parser.add_argument('--report-dir', default='reports', help='Directory to store reports')
     parser.add_argument('--include', nargs='+', help='Tags to include')
     parser.add_argument('--exclude', nargs='+', help='Tags to exclude')
     parser.add_argument('--coverage', action='store_true', help='Generate coverage reports for unit tests')
+    parser.add_argument('--init-browser', action='store_true', help='Initialize Browser library before running tests')
     
     args = parser.parse_args()
     
     # Create reports directory if it doesn't exist
     os.makedirs(args.report_dir, exist_ok=True)
     
+    # Initialize Browser library if requested or if browser tests will be run
+    if args.init_browser or args.type in ['browser', 'all']:
+        browser_init_code = initialize_browser_library()
+        if browser_init_code != 0:
+            print("Warning: Browser library initialization failed.")
+    
     return_codes = []
     
     if args.type in ['web', 'all']:
-        print("\n=== Running Web UI Tests ===")
+        print("\n=== Running Web UI Tests (Selenium) ===")
         web_return_code = run_robot_tests('tests/web', args.report_dir, args.include, args.exclude)
         return_codes.append(web_return_code)
+    
+    if args.type in ['browser', 'all']:
+        print("\n=== Running Web UI Tests (Browser Library) ===")
+        browser_return_code = run_robot_tests('tests/browser', args.report_dir, args.include, args.exclude)
+        return_codes.append(browser_return_code)
     
     if args.type in ['desktop', 'all']:
         print("\n=== Running Desktop UI Tests ===")
