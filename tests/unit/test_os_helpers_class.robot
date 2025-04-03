@@ -1,6 +1,6 @@
 *** Settings ***
-Documentation     Test cases for OS helpers functionality
-Resource          ../../resources/os_helpers.resource
+Documentation     Test cases for OS helpers functionality using the class-based approach
+Library           ../../resources/libraries/OSHelpers.py
 Library           Collections
 
 *** Test Cases ***
@@ -8,29 +8,29 @@ Verify OS Helper Functions
     [Documentation]    Verify that OS helper functions return expected data types
     
     # Get and verify hostname
-    ${hostname}=    Get System Hostname
+    ${hostname}=    Get Hostname
     Should Not Be Empty    ${hostname}
     Log    Hostname: ${hostname}
     
     # Get and verify IP address
-    ${ip}=    Get System IP Address
+    ${ip}=    Get IP Address
     Should Match Regexp    ${ip}    ^\\d+\\.\\d+\\.\\d+\\.\\d+$
     Log    IP Address: ${ip}
     
     # Get and verify MAC address
-    ${mac}=    Get System MAC Address
+    ${mac}=    Get MAC Address
     Should Match Regexp    ${mac}    ^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$
     Log    MAC Address: ${mac}
     
     # Get and verify OS info
-    ${os_info}=    Get Operating System Info
+    ${os_info}=    Get OS Info
     Dictionary Should Contain Key    ${os_info}    system
     Dictionary Should Contain Key    ${os_info}    version
     Dictionary Should Contain Key    ${os_info}    architecture
     Log    OS: ${os_info}[system] ${os_info}[release]
     
     # Get and verify username
-    ${username}=    Get Current Username
+    ${username}=    Get Username
     Should Not Be Empty    ${username}
     Log    Username: ${username}
     
@@ -41,7 +41,7 @@ Verify CPU And Memory Information
     [Documentation]    Verify CPU and memory information
     
     # Get and verify CPU info
-    ${cpu_info}=    Get CPU Information
+    ${cpu_info}=    Get CPU Info
     Dictionary Should Contain Key    ${cpu_info}    physical_cores
     Dictionary Should Contain Key    ${cpu_info}    total_cores
     Dictionary Should Contain Key    ${cpu_info}    cpu_usage
@@ -51,7 +51,7 @@ Verify CPU And Memory Information
     Log    CPU Usage: ${cpu_info}[cpu_usage]%
     
     # Get and verify memory info
-    ${memory_info}=    Get Memory Information
+    ${memory_info}=    Get Memory Info
     Dictionary Should Contain Key    ${memory_info}    total
     Dictionary Should Contain Key    ${memory_info}    available
     Dictionary Should Contain Key    ${memory_info}    used
@@ -62,7 +62,7 @@ Verify CPU And Memory Information
 Verify Disk Information
     [Documentation]    Verify disk information
     
-    ${disk_info}=    Get Disk Information
+    ${disk_info}=    Get Disk Info
     Should Not Be Empty    ${disk_info}
     Log    Found ${disk_info.__len__()} disk partitions
     
@@ -77,7 +77,7 @@ Verify Disk Information
 Verify Network Information
     [Documentation]    Verify network interface information
     
-    ${network_info}=    Get Network Information
+    ${network_info}=    Get Network Info
     Should Not Be Empty    ${network_info}
     Log    Found ${network_info.__len__()} network interfaces
     
