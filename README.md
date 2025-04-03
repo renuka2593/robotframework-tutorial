@@ -131,6 +131,33 @@ pabot --processes 2 -d reports tests/
 
 Reports are automatically generated in the `reports` directory after test execution.
 
+## Dashboard Reports with Robotframework-Metrics
+
+This framework includes support for enhanced dashboard-style reports using `robotframework-metrics`. These reports provide a comprehensive view of test execution with suite summaries, test details, and visualizations.
+
+### Generating Dashboard Reports
+
+After running your tests, generate a metrics dashboard with:
+
+```bash
+python -m robotmetrics --inputpath reports/ --output reports/metrics-dashboard.html
+```
+
+The dashboard provides:
+
+- Suite and test case summaries
+- Pass/fail statistics and charts
+- Execution timeline visualization
+- Test execution metrics with filtering
+- Status breakdowns by tags and suites
+
+### Key Benefits
+
+- Better visibility into test execution results
+- Easy identification of test performance trends
+- Shareable HTML reports for stakeholders
+- Interactive filtering and sorting of results
+
 ## Environment Configuration
 
-Configure environment variables in a `.env` file or directly at runtime.
+Configure environment variables in a `.env`
