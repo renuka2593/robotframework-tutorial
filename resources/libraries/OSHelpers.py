@@ -109,6 +109,83 @@ class OSHelpers:
                         for elements in range(0, 8*6, 8)][::-1])
 
     @keyword
+    def get_all_mac_addresses(self) -> Dict[str, str]:
+        """
+        Get the MAC addresses of all network interfaces.
+        
+        Returns:
+            dict: Dictionary mapping interface names to their MAC addresses
+            
+        Example:
+            | ${all_macs}= | Get All MAC Addresses |
+            | FOR | ${interface} | ${mac} | IN | &{all_macs} |
+            | | Log | Interface ${interface} has MAC ${mac} |
+            | END |
+        """
+        mac_dict = {}
+        for interface_name, interface_addresses in psutil.net_if_addrs().items():
+            for address in interface_addresses:
+                if address.family == psutil.AF_LINK:  # MAC address
+                    mac_dict[interface_name] = address.address
+                    break
+        return mac_dict
+
+    @keyword
+    def get_physical_addresses_ipconfig_format(self) -> List[Dict[str, str]]:
+        """
+        Get physical addresses (MAC) of all network interfaces in a format similar to ipconfig /all.
+        
+        Returns:
+            list: List of dictionaries with interface information formatted like ipconfig output
+                Each dictionary contains:
+                - adapter_name: Network adapter name
+                - physical_address: MAC address in the format XX-XX-XX-XX-XX-XX
+                - ip_address: Primary IP address associated with this adapter
+                - status: Connection status if available
+        
+        Example:
+            | ${ipconfig_info}= | Get Physical Addresses Ipconfig Format |
+            | FOR | ${adapter} | IN | @{ipconfig_info} |
+            | | Log | Adapter: ${adapter}[adapter_name] |
+            | | Log | Physical Address: ${adapter}[physical_address] |
+            | | Log | IP Address: ${adapter}[ip_address] |
+            | END |
+        """
+        result = []
+        interfaces = psutil.net_if_addrs()
+        status = psutil.net_if_stats()
+        
+        for interface_name, addrs in interfaces.items():
+            adapter_info = {
+                'adapter_name': interface_name,
+                'physical_address': None,
+                'ip_address': None,
+                'status': 'Disconnected'
+            }
+            
+            # If interface has stats and is up
+            if interface_name in status:
+                adapter_info['status'] = 'Connected' if status[interface_name].isup else 'Disconnected'
+            
+            # Get addresses
+            for addr in addrs:
+                # Get MAC address (physical address)
+                if addr.family == psutil.AF_LINK:
+                    # Format like ipconfig (XX-XX-XX-XX-XX-XX)
+                    formatted_mac = addr.address.upper()
+                    if ':' in formatted_mac:
+                        formatted_mac = formatted_mac.replace(':', '-')
+                    adapter_info['physical_address'] = formatted_mac
+                
+                # Get IPv4 address
+                elif addr.family == socket.AF_INET:
+                    adapter_info['ip_address'] = addr.address
+            
+            result.append(adapter_info)
+        
+        return result
+
+    @keyword
     def get_os_info(self) -> Dict[str, str]:
         """
         Get operating system information.
