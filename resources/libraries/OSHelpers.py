@@ -40,6 +40,23 @@ class OSHelpers:
         return socket.gethostname()
 
     @keyword
+    def get_machine_name(self) -> str:
+        """
+        Get the machine name (computer name) of the current system.
+        
+        This returns the computer's network name (which might be different
+        from the hostname in some environments).
+        
+        Returns:
+            str: Machine name
+            
+        Example:
+            | ${machine_name}= | Get Machine Name |
+            | Log | Machine name is ${machine_name} |
+        """
+        return platform.node()
+
+    @keyword
     def get_fqdn(self) -> str:
         """
         Get the fully qualified domain name of the current machine.

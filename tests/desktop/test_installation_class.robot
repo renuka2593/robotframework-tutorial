@@ -1,6 +1,6 @@
 *** Settings ***
-Documentation     Test cases demonstrating application installation with PyWinAuto
-Resource          ../../resources/install_helpers.resource
+Documentation     Test cases demonstrating application installation with the class-based InstallationHelpers library
+Library           ../../resources/libraries/InstallationHelpers.py
 Library           OperatingSystem
 Suite Setup       Setup Test Environment
 Suite Teardown    Cleanup Test Environment
@@ -25,7 +25,7 @@ Install Application Using EXE Installer
     Skip If    not os.path.exists('${TEST_APP_INSTALLER}')    Installer not found at: ${TEST_APP_INSTALLER}
     
     # Install silently
-    ${result}=    Install EXE Application    
+    ${result}=    Install EXE Application
     ...    exe_path=${TEST_APP_INSTALLER}
     ...    silent=${TRUE}
     ...    timeout=120
@@ -74,7 +74,7 @@ Install Application Interactively
     Skip If    not os.path.exists('${TEST_APP_INSTALLER}')    Installer not found at: ${TEST_APP_INSTALLER}
     
     # Install interactively
-    ${result}=    Install Application With PyWinAuto
+    ${result}=    Install Application
     ...    installer_path=${TEST_APP_INSTALLER}
     ...    silent=${FALSE}
     ...    custom_install_path=${CUSTOM_INSTALL_PATH}
@@ -96,7 +96,7 @@ Uninstall Application
     Skip If    not ${is_windows}    This test only runs on Windows
     
     # Uninstall application
-    ${result}=    Uninstall Application With PyWinAuto
+    ${result}=    Uninstall Application
     ...    app_name=${TEST_APP_NAME}
     ...    silent=${TRUE}
     ...    timeout=120
@@ -107,6 +107,30 @@ Uninstall Application
     # Verify application is no longer installed
     ${exe_path}=    Join Path    ${CUSTOM_INSTALL_PATH}    TestApp.exe
     File Should Not Exist    ${exe_path}    Application still exists after uninstallation
+
+Check If Process Is Running
+    [Documentation]    Verify the Is Process Running keyword
+    [Tags]    process    windows
+    
+    # Skip test if not on Windows
+    ${is_windows}=    Evaluate    platform.system() == 'Windows'    platform
+    Skip If    not ${is_windows}    This test only runs on Windows
+    
+    # Start a process to check
+    Start Process    notepad.exe    shell=True    alias=notepad
+    Sleep    2s    # Give it time to start
+    
+    # Check if the process is running
+    ${running}=    Is Process Running    notepad.exe
+    Should Be True    ${running}    Notepad should be running
+    
+    # Clean up
+    Terminate Process    notepad
+    Sleep    1s    # Give it time to terminate
+    
+    # Verify process is no longer running
+    ${running}=    Is Process Running    notepad.exe
+    Should Not Be True    ${running}    Notepad should not be running after termination
 
 *** Keywords ***
 Setup Test Environment
@@ -129,7 +153,7 @@ Cleanup Test Environment
 
     # If the test app is still installed, try to uninstall it
     TRY
-        Uninstall Application With PyWinAuto    ${TEST_APP_NAME}    silent=${TRUE}
+        Uninstall Application    ${TEST_APP_NAME}    silent=${TRUE}
     EXCEPT    AS    ${error}
         Log    Failed to uninstall application: ${error}    WARN
     END
