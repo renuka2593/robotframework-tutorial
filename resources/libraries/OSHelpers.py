@@ -186,6 +186,33 @@ class OSHelpers:
         return result
 
     @keyword
+    def get_physical_addresses(self) -> List[str]:
+        """
+        Get only the physical addresses (MAC) of all network interfaces in XX-XX-XX-XX-XX-XX format.
+        
+        Returns:
+            list: List of physical addresses (MAC addresses) in Windows format
+            
+        Example:
+            | ${physical_addresses}= | Get Physical Addresses |
+            | FOR | ${address} | IN | @{physical_addresses} |
+            | | Log | Physical Address: ${address} |
+            | END |
+        """
+        physical_addresses = []
+        
+        for _, addrs in psutil.net_if_addrs().items():
+            for addr in addrs:
+                if addr.family == psutil.AF_LINK:
+                    # Format like ipconfig (XX-XX-XX-XX-XX-XX)
+                    formatted_mac = addr.address.upper()
+                    if ':' in formatted_mac:
+                        formatted_mac = formatted_mac.replace(':', '-')
+                    physical_addresses.append(formatted_mac)
+        
+        return physical_addresses
+
+    @keyword
     def get_os_info(self) -> Dict[str, str]:
         """
         Get operating system information.
