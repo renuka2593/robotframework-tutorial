@@ -3,3 +3,4 @@ robotframework-browser==18.0.0
 robotframework-metrics==3.3.3
 psutil==5.9.8
 python-dotenv>=1.0.0 
+robotmetrics
