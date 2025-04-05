@@ -18,42 +18,53 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 logger = logging.getLogger(__name__)
 
 # --- Determine Absolute Path for Template (relative to this file) ---
-_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-_TEMPLATE_PATH = os.path.join(_SCRIPT_DIR, 'templates', 'report_template.html')
-logger.debug(f"Template path determined: {_TEMPLATE_PATH}")
+# _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# _TEMPLATE_PATH = os.path.join(_SCRIPT_DIR, 'templates', 'report_template.html')
+# logger.debug(f"Template path determined: {_TEMPLATE_PATH}")
 
 
 class TestMetrics(ResultVisitor):
     """
-    Generates comprehensive test metrics from Robot Framework output.xml using ResultVisitor.
-    Includes system info, test stats, keyword usage, timeline, and tag analysis.
+    Robot Framework ResultVisitor to collect detailed metrics from test results.
+    Populates a dictionary with suite/test/keyword/system info.
+    Does NOT handle report generation (JSON/HTML).
     """
     
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     
     def __init__(self):
-        logger.debug("Initializing TestMetrics instance.")
+        logger.debug("Initializing TestMetrics visitor instance.")
         self._reset_state()
 
     def _reset_state(self):
-        """Resets the internal state for processing a new result file."""
+        """Resets the internal state for processing a new result file/object."""
         self.start_time = time.time()
         self.metrics = { # Initialize structure clearly
                 'generation_info': {
-                    'version': '1.3.0', # Updated version for template change
-                    'timestamp': datetime.now(timezone.utc).isoformat(),
+                    'version': '1.3.0-VisitorOnly', # Indicate class purpose
+                    'timestamp': None, # Will be set at the end
                     'processing_time_sec': 0.0
                 },
                 'total_tests': 0, 'passed_tests': 0, 'failed_tests': 0, 'skipped_tests': 0,
                 'duration': 0.0, 'suites': [], 'tags': {},
                 'test_timeline': [], 'critical_failures': [],
-                'system_info': {}, # Populated at the end of processing
+                'system_info': {}, # Populated at the end
                 'all_keywords': {}
             }
         self._suite_stack = [] 
         self._current_test_metrics = None
         self._keyword_stack = []
         logger.debug("Internal metrics state reset.")
+        
+    def get_metrics(self):
+        """Returns the collected metrics dictionary."""
+        # Ensure final calculations are done if they haven't been (e.g., if close wasn't called)
+        # In this structure, final calcs happen in end_suite for root, so should be okay.
+        if not self.metrics.get('system_info'): # Check if processing completed
+             logger.warning("get_metrics called before processing finished or system_info wasn't gathered.")
+             # Optionally gather system info here if needed as a fallback?
+             # self.metrics['system_info'] = self._get_system_info()
+        return self.metrics
         
     def _get_system_info(self):
         """Gather system information."""
@@ -136,17 +147,20 @@ class TestMetrics(ResultVisitor):
 
         # If this was the root suite ending
         if not self._suite_stack:
-            logger.info("Finalizing global metrics.")
+            logger.info("Finalizing global metrics within visitor.")
             self.metrics['total_tests'] = stats.total
             self.metrics['passed_tests'] = stats.passed
             self.metrics['failed_tests'] = stats.failed
             self.metrics['skipped_tests'] = stats.skipped
             self.metrics['duration'] = current_suite_metrics['duration'] # Root duration
             self.metrics['system_info'] = self._get_system_info() # Get system info at the very end
+            self.metrics['generation_info']['timestamp'] = datetime.now(timezone.utc).isoformat() # Set final timestamp
             processing_time = time.time() - self.start_time
             self.metrics['generation_info']['processing_time_sec'] = round(processing_time, 3)
-            logger.info(f"Total processing time: {processing_time:.3f}s")
-            # Global keyword calculation happens in generate_metrics_report now
+            logger.info(f"Visitor processing time: {processing_time:.3f}s")
+            # Calculate final stats for ALL keywords collected
+            self._calculate_keyword_stats(self.metrics.get('all_keywords', {}))
+            logger.debug("Final keyword stat calculation complete.")
 
     def start_test(self, test):
         if not self._suite_stack:
@@ -272,9 +286,16 @@ class TestMetrics(ResultVisitor):
         #     logger.debug(f"Message outside keyword context: [{msg.level}] {msg.message}")
             
     def close(self):
-        logger.debug("ResultVisitor closing.")
-        # Final calculations if needed after all visits are done
-        pass
+        # Added check to ensure final stats calculated if close is called explicitly
+        logger.debug("ResultVisitor closing. Ensuring final stats calculated.")
+        if not self._suite_stack: # Only if we already processed the root suite
+            self._calculate_keyword_stats(self.metrics.get('all_keywords', {}))
+            if not self.metrics.get('system_info'):
+                self.metrics['system_info'] = self._get_system_info()
+            if not self.metrics.get('generation_info', {}).get('processing_time_sec'):
+                 processing_time = time.time() - self.start_time
+                 self.metrics['generation_info']['processing_time_sec'] = round(processing_time, 3)
+                 self.metrics['generation_info']['timestamp'] = datetime.now(timezone.utc).isoformat()
 
     def _aggregate_keyword_stats(self, name, duration_secs, status):
          """Aggregates stats for a specific keyword globally and for the current suite."""
@@ -319,140 +340,16 @@ class TestMetrics(ResultVisitor):
             stats['max_duration'] = round(stats['max_duration'], 3)
             stats['total_duration'] = round(stats['total_duration'], 3)
 
-    # --- Report Generation --- 
+    # --- REMOVED Report Generation Methods --- 
+    # def generate_metrics_report(self, output_xml, report_dir='metrics'):
+    #    ... (REMOVED)
 
-    def generate_metrics_report(self, output_xml, report_dir='metrics'):
-        """
-        Orchestrates parsing the XML and generating JSON and HTML reports.
-        """
-        logger.info(f"--- Starting Metrics Report Generation ({datetime.now()}) ---")
-        logger.info(f"Input XML: {output_xml}")
-        logger.info(f"Output Directory: {report_dir}")
-        
-        # Validate input path
-        if not os.path.exists(output_xml):
-            logger.error(f"CRITICAL ERROR: Input XML file not found: {output_xml}")
-            return None
-        
-        # Prepare output directory
-        report_dir = os.path.abspath(report_dir)
-        try:
-            os.makedirs(report_dir, exist_ok=True)
-            logger.debug(f"Report directory ensured: {report_dir}")
-        except OSError as e_mkdir:
-             logger.error(f"CRITICAL ERROR: Failed to create report directory {report_dir}: {e_mkdir}", exc_info=True)
-             return None
-        
-        # --- Reset state and Parse XML using visitor --- 
-        self._reset_state() # CRUCIAL: Ensure clean state before parsing
-        logger.debug(f"Starting XML Parsing: {output_xml}")
-        try:
-            result = ExecutionResult(output_xml)
-            result.visit(self) # Populates self.metrics via visitor methods
-        except Exception as parse_e:
-             logger.error(f"CRITICAL ERROR: Failed to parse {output_xml}: {parse_e}", exc_info=True)
-             return None
-        logger.debug("XML Parsing finished successfully.")
-        
-        # --- Finalize Metrics --- 
-        if not self.metrics or not self.metrics.get('suites'):
-             logger.error("CRITICAL ERROR: Metrics data appears empty after parsing. Visitor logic might be flawed.")
-             return None
-             
-        # Calculate final global keyword stats AFTER all visits are done
-        self._calculate_keyword_stats(self.metrics.get('all_keywords', {}))
-        logger.debug(f"Metrics finalized. Overall duration: {self.metrics['duration']:.3f}s")
+    # def _generate_html_report(self, report_html_path):
+    #    ... (REMOVED)
 
-        # --- Save JSON Report --- 
-        metrics_json_path = os.path.join(report_dir, 'metrics.json')
-        logger.debug(f"Attempting to save JSON to: {metrics_json_path}")
-        try:
-            with open(metrics_json_path, 'w', encoding='utf-8') as f:
-                json.dump(self.metrics, f, indent=2)
-            logger.debug("Successfully saved JSON data.")
-        except Exception as e:
-             # Log error but continue to HTML generation if possible
-             logger.error(f"ERROR: Failed to save metrics JSON: {e}", exc_info=True)
-        
-        # --- Generate HTML Report --- 
-        report_html_path = os.path.join(report_dir, 'index.html')
-        logger.debug(f"Attempting to generate HTML report to: {report_html_path}")
-        try:
-            self._generate_html_report(report_html_path) # Pass only the output path
-            
-            # --- Final Summary Output --- 
-            logger.info(f"------------------------------------------")
-            logger.info(f"  Metrics Report Generation Complete")
-            logger.info(f"------------------------------------------")
-            logger.info(f"  Input XML:      {os.path.relpath(output_xml)}")
-            logger.info(f"  JSON Data:      {os.path.relpath(metrics_json_path)}")
-            logger.info(f"  HTML Report:    {os.path.relpath(report_html_path)}")
-            logger.info(f"  Total Tests:    {self.metrics.get('total_tests', 'N/A')}")
-            # Status of the root suite
-            overall_status = self.metrics.get('suites', [{}])[0].get('status', 'N/A') 
-            logger.info(f"  Overall Status: {overall_status}")
-            logger.info(f"------------------------------------------")
-            return report_html_path # Return path on success
-            
-        except Exception as e:
-             # Log the error and return None to indicate failure
-             logger.error(f"CRITICAL ERROR: Failed during HTML report generation: {e}", exc_info=True)
-             return None
-
-    # --- NEW: Generate HTML from External Template --- 
-    def _generate_html_report(self, report_html_path):
-        """Generate HTML report from self.metrics into the specified file path using the external template."""
-        template_path = _TEMPLATE_PATH # Use the path defined at the top
-        logger.debug(f"Using template path for HTML generation: {template_path}")
-        
-        # Step 1: Read the template content
-        logger.debug(f"Reading template file content from: {template_path}")
-        try:
-            with open(template_path, 'r', encoding='utf-8') as f:
-                template_content = f.read()
-            logger.debug(f"Successfully read template file ({len(template_content)} bytes).")
-        except FileNotFoundError:
-             logger.error(f"CRITICAL ERROR: HTML template file not found at {template_path}! Cannot generate report.")
-             raise # Re-raise the exception to stop the process
-        except Exception as e:
-            logger.error(f"CRITICAL ERROR: Failed to read template file {template_path}: {e}", exc_info=True)
-            raise # Re-raise
-
-        # Step 2: Prepare JSON data for injection
-        logger.debug(f"Preparing metrics JSON string (approx {len(str(self.metrics))} chars) for HTML replacement.")
-        try:
-             # Use compact JSON for injection, handle potential non-serializable data gracefully
-             metrics_json_string = json.dumps(self.metrics, default=str, separators=(',', ':')) 
-        except Exception as json_e:
-             logger.error(f"ERROR: Failed to serialize metrics data to JSON string: {json_e}", exc_info=True)
-             # Create a JSON object indicating the error for embedding
-             error_data = {'error': f"Failed to serialize metrics data: {json_e}"}
-             metrics_json_string = json.dumps(error_data) 
-             
-        # Step 3: Replace placeholder
-        placeholder = '{{METRICS_DATA}}'
-        logger.debug(f"Replacing '{placeholder}' placeholder in HTML content.")
-        if placeholder not in template_content:
-             # Log an error but try to proceed, the JS will likely fail
-             logger.error(f"CRITICAL ERROR: Placeholder '{placeholder}' not found in template file {template_path}. Report will be incomplete.")
-             html_content = template_content + f"\n<!-- ERROR: Placeholder {placeholder} not found! -->\n<script>console.error('Template placeholder {placeholder} missing!');</script>" 
-        else:
-            html_content = template_content.replace(placeholder, metrics_json_string)
-            logger.debug(f"Placeholder '{placeholder}' replaced successfully.")
-        
-        # Step 4: Write the final report
-        logger.debug(f"Writing final HTML report to: {report_html_path}")
-        try:
-            with open(report_html_path, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-            logger.debug(f"Successfully wrote HTML report ({len(html_content)} bytes).")
-        except Exception as e:
-            logger.error(f"CRITICAL ERROR: Failed to write final HTML report file {report_html_path}: {e}", exc_info=True)
-            raise # Re-raise
-            
-    # --- REMOVED OLD TEMPLATE METHODS --- 
-    # def _create_or_verify_template(self): ... (REMOVED)
-    # def _create_default_template(self): ... (REMOVED)
+# --- REMOVED Main execution block --- 
+# if __name__ == '__main__':
+#    ... (REMOVED)
 
 # --- Main execution block (for testing or direct use) ---
 if __name__ == '__main__':
