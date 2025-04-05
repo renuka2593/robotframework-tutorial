@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt robotframework-metrics
           rfbrowser init
 
       - name: Run Robot Framework tests
@@ -67,18 +67,16 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      - name: Generate test report
+      - name: Generate metrics report
         if: always()
         run: |
-          python resources/libraries/generate_metrics.py results/output.xml metrics
+          python -m robotmetrics --inputpath results/output.xml --output results/metrics_report.html
 
       - name: Upload metrics report
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: metrics-report-${{ matrix.browser }}
-          path: |
-            metrics/*.html
-            metrics/*.json
+          path: results/metrics_report.html
           retention-days: 30
           if-no-files-found: warn
