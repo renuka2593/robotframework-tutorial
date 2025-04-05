@@ -3,8 +3,8 @@ Documentation     End-to-end tests for the login functionality
 Resource          ../../resources/keywords/login_page.resource
 Resource          ../../resources/keywords/inventory_page.resource
 
-Suite Setup       Open Login Page
-Suite Teardown    Close Browser    ALL
+Test Setup       Open Login Page
+Test Teardown    Close Browser    ALL
 
 Force Tags        login    e2e
 

@@ -27,7 +27,7 @@ Remove Product From Cart
 Get Cart Item Count
     [Documentation]    Returns the number of items in the cart
     ${count}=    Get Text    ${SHOPPING_CART_BADGE}
-    [Return]    ${count}
+    RETURN    ${count}
 
 Sort Products
     [Documentation]    Sorts products using the dropdown
