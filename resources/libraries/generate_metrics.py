@@ -3,40 +3,78 @@
 
 import os
 import sys
-import glob
+import json
+from datetime import datetime
+from robot.api import ExecutionResult
 from TestMetrics import TestMetrics
-
-def find_output_files(results_dir):
-    """Find all output.xml files in the results directory and its subdirectories."""
-    pattern = os.path.join(results_dir, '**', 'output.xml')
-    return glob.glob(pattern, recursive=True)
+import argparse
 
 def main():
-    """Generate metrics report from Robot Framework output.xml files"""
-    if len(sys.argv) < 2:
-        print("Usage: python generate_metrics.py <results_dir> [report_dir]")
+    """
+    Generate test metrics report from Robot Framework output.xml files.
+    Usage: python generate_metrics.py <results_dir> <output_dir>
+    """
+    if len(sys.argv) != 3:
+        print("Usage: python generate_metrics.py <results_dir> <output_dir>")
         sys.exit(1)
-    
+
     results_dir = sys.argv[1]
-    report_dir = sys.argv[2] if len(sys.argv) > 2 else 'metrics'
+    output_dir = sys.argv[2]
+
+    # Create output directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Find all output.xml files in the results directory
+    output_files = []
+    for root, _, files in os.walk(results_dir):
+        for file in files:
+            if file == 'output.xml':
+                output_files.append(os.path.join(root, file))
+
+    if not output_files:
+        print(f"No output.xml files found in {results_dir}")
+        sys.exit(1)
+
+    # Process each output.xml file
+    for output_xml in output_files:
+        try:
+            # Create metrics collector
+            metrics = TestMetrics()
+            
+            # Parse the output.xml file
+            result = ExecutionResult(output_xml)
+            result.visit(metrics)
+
+            # Generate timestamp for filenames
+            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            
+            # Save metrics data as JSON
+            metrics_json = os.path.join(output_dir, f'metrics-{timestamp}.json')
+            with open(metrics_json, 'w') as f:
+                json.dump(metrics.metrics, f, indent=2, default=str)
+            
+            # Generate HTML report
+            metrics.generate_metrics_report(output_xml, output_dir)
+            
+            print(f"Generated metrics report for {output_xml}")
+            print(f"JSON data saved to: {metrics_json}")
+            print(f"HTML report saved to: {os.path.join(output_dir, 'index.html')}")
+
+        except Exception as e:
+            print(f"Error processing {output_xml}: {str(e)}")
+            continue
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Generate test metrics report')
+    parser.add_argument('input', help='Path to output.xml file')
+    parser.add_argument('output', help='Output directory for the report')
+    
+    args = parser.parse_args()
     
     try:
         metrics = TestMetrics()
-        output_files = find_output_files(results_dir)
-        
-        if not output_files:
-            print(f"No output.xml files found in {results_dir}")
-            sys.exit(1)
-        
-        print(f"Found {len(output_files)} output.xml files")
-        for output_xml in output_files:
-            print(f"Processing: {output_xml}")
-            result = metrics.generate_metrics_report(output_xml, report_dir)
-            print(result)
-            
+        report_file = metrics.generate_metrics_report(args.input, args.output)
+        print(f"Successfully generated metrics report: {report_file}")
     except Exception as e:
         print(f"Error generating metrics report: {str(e)}")
-        sys.exit(1)
-
-if __name__ == '__main__':
-    main() 
+        exit(1) 
