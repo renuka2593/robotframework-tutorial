@@ -1,0 +1,3 @@
+com/test/automation/pages/LoginPage.class
+com/test/automation/utils/DriverManager.class
+com/test/automation/pages/BasePage.class

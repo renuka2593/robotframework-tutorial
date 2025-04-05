@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: Failed Login to Sauce Demo
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.33 s -- in Failed Login to Sauce Demo
