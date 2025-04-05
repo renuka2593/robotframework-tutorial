@@ -1,8 +1,0 @@
-com/test/automation/stepdefinitions/LoginSteps.class
-com/test/automation/runners/SuccessfulLoginTestRunner.class
-com/test/automation/utils/DriverManager.class
-com/test/automation/runners/FailedLoginTestRunner.class
-com/test/automation/runners/TestRunner.class
-com/test/automation/runners/RerunFailedTestsRunner.class
-com/test/automation/hooks/Hooks.class
-com/test/automation/utils/RetryAnalyzer.class
