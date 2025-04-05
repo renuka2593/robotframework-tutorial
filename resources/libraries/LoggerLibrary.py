@@ -1,204 +1,150 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Robot Framework library for enhanced logging, assertions and screenshots.
-"""
+"""Library for enhanced logging and assertions in Robot Framework."""
 
 import os
-import time
-import base64
 from datetime import datetime
 from robot.api import logger
-from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
+from robot.api.deco import keyword
 
 class LoggerLibrary:
-    """
-    Library providing enhanced logging with assertion capabilities for Robot Framework.
-    Can embed screenshots in logs and handle various assertion types.
-    """
+    """Library for enhanced logging and assertions with screenshot capabilities."""
 
-    ROBOT_LIBRARY_SCOPE = "GLOBAL"
-    
-    def __init__(self, screenshot_directory=None, capture_screenshot_on_fail=True):
-        """
-        Initialize the LoggerLibrary.
+    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
+
+    def __init__(self):
+        self.builtin = BuiltIn()
+        self.browser = None
+        self.screenshot_dir = "screenshots"
+
+    def _get_browser(self):
+        """Get the Browser library instance."""
+        if not self.browser:
+            self.browser = self.builtin.get_library_instance('Browser')
+        return self.browser
+
+    def _capture_screenshot(self, name=None):
+        """Capture a screenshot and return its path."""
+        if not name:
+            name = f"screenshot_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
-        Arguments:
-            screenshot_directory: Directory to save screenshots (defaults to ${OUTPUT_DIR}/screenshots)
-            capture_screenshot_on_fail: Whether to capture a screenshot on assertion failures
-        """
-        self._builtin = BuiltIn()
-        self._capture_screenshot_on_fail = capture_screenshot_on_fail
-        
-        if screenshot_directory:
-            self._screenshot_dir = screenshot_directory
-        else:
-            output_dir = self._builtin.get_variable_value("${OUTPUT_DIR}")
-            self._screenshot_dir = os.path.join(output_dir, "screenshots")
-            
-        os.makedirs(self._screenshot_dir, exist_ok=True)
-    
+        os.makedirs(self.screenshot_dir, exist_ok=True)
+        path = os.path.join(self.screenshot_dir, f"{name}.png")
+        self._get_browser().take_screenshot(path)
+        return path
+
     @keyword
-    def log_info(self, message):
-        """
-        Logs a message at INFO level.
-        
-        Arguments:
-            message: Message to log
-            
-        Example:
-            Log Info    Starting test execution
-        """
+    def log_info(self, message, take_screenshot=False):
+        """Log a message at INFO level with optional screenshot."""
         logger.info(message)
-    
+        if take_screenshot:
+            path = self._capture_screenshot("info")
+            logger.info(f'<img src="{path}" width="800px">', html=True)
+
     @keyword
-    def log_warning(self, message):
-        """
-        Logs a message at WARN level.
-        
-        Arguments:
-            message: Warning message to log
-            
-        Example:
-            Log Warning    API response time exceeds threshold
-        """
+    def log_warning(self, message, take_screenshot=True):
+        """Log a message at WARN level with optional screenshot."""
         logger.warn(message)
-    
+        if take_screenshot:
+            path = self._capture_screenshot("warning")
+            logger.warn(f'<img src="{path}" width="800px">', html=True)
+
     @keyword
-    def log_error(self, message):
-        """
-        Logs a message at ERROR level.
-        
-        Arguments:
-            message: Error message to log
-            
-        Example:
-            Log Error    Failed to connect to database
-        """
+    def log_error(self, message, take_screenshot=True):
+        """Log a message at ERROR level with optional screenshot."""
         logger.error(message)
-        
+        if take_screenshot:
+            path = self._capture_screenshot("error")
+            logger.error(f'<img src="{path}" width="800px">', html=True)
+
     @keyword
-    def capture_and_embed_screenshot(self, filename=None):
-        """
-        Captures a screenshot and embeds it in the log.
-        
-        Returns the path to the saved screenshot.
-        
-        Arguments:
-            filename: Optional filename for the screenshot
-            
-        Example:
-            ${path}=    Capture And Embed Screenshot    login_screen
-        """
-        if not filename:
-            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-            filename = f"screenshot_{timestamp}"
-            
-        # Get Browser library instance
-        browser = BuiltIn().get_library_instance('Browser')
-        
-        # Take screenshot with Browser library
-        fullpath = os.path.join(self._screenshot_dir, f"{filename}.png")
-        browser.take_screenshot(filename=fullpath)
-        
-        # Embed in log
-        if os.path.exists(fullpath):
-            with open(fullpath, "rb") as image_file:
-                encoded_string = base64.b64encode(image_file.read()).decode()
-                logger.info(
-                    f'<img src="data:image/png;base64,{encoded_string}" width="800px"/>',
-                    html=True
-                )
-            return fullpath
-        else:
-            logger.warn(f"Failed to capture screenshot: {fullpath}")
-            return None
-    
+    def capture_and_embed_screenshot(self, name=None):
+        """Capture a screenshot and embed it in the log."""
+        path = self._capture_screenshot(name)
+        logger.info(f'<img src="{path}" width="800px">', html=True)
+        return path
+
     @keyword
-    def assert_equal(self, actual, expected, message=None, capture_screenshot=None):
-        """
-        Asserts that two values are equal.
-        
-        Arguments:
-            actual: Actual value
-            expected: Expected value
-            message: Custom failure message
-            capture_screenshot: Whether to capture a screenshot on failure
-            
-        Example:
-            Assert Equal    ${count}    5    User count should be 5
-        """
-        capture = self._capture_screenshot_on_fail if capture_screenshot is None else capture_screenshot
-        
+    def assert_equal(self, actual, expected, message=None, take_screenshot=True):
+        """Assert that two values are equal with optional screenshot on failure."""
         try:
-            self._builtin.should_be_equal(actual, expected, message)
+            self.builtin.should_be_equal(actual, expected)
         except AssertionError as e:
-            if capture:
-                self.capture_and_embed_screenshot(f"assertion_failure_{int(time.time())}")
-            raise e
-    
+            if take_screenshot:
+                path = self._capture_screenshot("assert_equal_failed")
+                logger.error(f'<img src="{path}" width="800px">', html=True)
+            raise AssertionError(message or str(e))
+
     @keyword
-    def assert_contains(self, actual, expected, message=None, capture_screenshot=None):
-        """
-        Asserts that a value contains the expected substring or item.
-        
-        Arguments:
-            actual: Actual value (string or list)
-            expected: Expected substring or item
-            message: Custom failure message
-            capture_screenshot: Whether to capture a screenshot on failure
-            
-        Example:
-            Assert Contains    ${response_text}    success    Response should indicate success
-        """
-        capture = self._capture_screenshot_on_fail if capture_screenshot is None else capture_screenshot
-        
+    def assert_not_equal(self, actual, expected, message=None, take_screenshot=True):
+        """Assert that two values are not equal with optional screenshot on failure."""
         try:
-            self._builtin.should_contain(actual, expected, message)
+            self.builtin.should_not_be_equal(actual, expected)
         except AssertionError as e:
-            if capture:
-                self.capture_and_embed_screenshot(f"assertion_failure_{int(time.time())}")
-            raise e
-            
+            if take_screenshot:
+                path = self._capture_screenshot("assert_not_equal_failed")
+                logger.error(f'<img src="{path}" width="800px">', html=True)
+            raise AssertionError(message or str(e))
+
     @keyword
-    def assert_true(self, condition, message=None, capture_screenshot=None):
-        """
-        Asserts that a condition is true.
-        
-        Arguments:
-            condition: Condition to check
-            message: Custom failure message
-            capture_screenshot: Whether to capture a screenshot on failure
-            
-        Example:
-            Assert True    ${status} == 200    API should return success status
-        """
-        capture = self._capture_screenshot_on_fail if capture_screenshot is None else capture_screenshot
-        
+    def assert_true(self, condition, message=None, take_screenshot=True):
+        """Assert that a condition is true with optional screenshot on failure."""
         try:
-            self._builtin.should_be_true(condition, message)
+            self.builtin.should_be_true(condition)
         except AssertionError as e:
-            if capture:
-                self.capture_and_embed_screenshot(f"assertion_failure_{int(time.time())}")
-            raise e
-            
+            if take_screenshot:
+                path = self._capture_screenshot("assert_true_failed")
+                logger.error(f'<img src="{path}" width="800px">', html=True)
+            raise AssertionError(message or str(e))
+
     @keyword
-    def log_and_fail(self, message, capture_screenshot=True):
-        """
-        Logs an error message, optionally captures a screenshot, and fails the test.
-        
-        Arguments:
-            message: Error message
-            capture_screenshot: Whether to capture a screenshot
-            
-        Example:
-            Log And Fail    Critical error: Database connection lost
-        """
-        self.log_error(message)
-        
-        if capture_screenshot:
-            self.capture_and_embed_screenshot(f"failure_{int(time.time())}")
-            
-        self._builtin.fail(message) 
+    def assert_false(self, condition, message=None, take_screenshot=True):
+        """Assert that a condition is false with optional screenshot on failure."""
+        try:
+            self.builtin.should_not_be_true(condition)
+        except AssertionError as e:
+            if take_screenshot:
+                path = self._capture_screenshot("assert_false_failed")
+                logger.error(f'<img src="{path}" width="800px">', html=True)
+            raise AssertionError(message or str(e))
+
+    @keyword
+    def assert_contains(self, container, item, message=None, take_screenshot=True):
+        """Assert that a container contains an item with optional screenshot on failure."""
+        try:
+            self.builtin.should_contain(container, item)
+        except AssertionError as e:
+            if take_screenshot:
+                path = self._capture_screenshot("assert_contains_failed")
+                logger.error(f'<img src="{path}" width="800px">', html=True)
+            raise AssertionError(message or str(e))
+
+    @keyword
+    def assert_not_contains(self, container, item, message=None, take_screenshot=True):
+        """Assert that a container does not contain an item with optional screenshot on failure."""
+        try:
+            self.builtin.should_not_contain(container, item)
+        except AssertionError as e:
+            if take_screenshot:
+                path = self._capture_screenshot("assert_not_contains_failed")
+                logger.error(f'<img src="{path}" width="800px">', html=True)
+            raise AssertionError(message or str(e))
+
+    @keyword
+    def assert_matches(self, string, pattern, message=None, take_screenshot=True):
+        """Assert that a string matches a pattern with optional screenshot on failure."""
+        try:
+            self.builtin.should_match(string, pattern)
+        except AssertionError as e:
+            if take_screenshot:
+                path = self._capture_screenshot("assert_matches_failed")
+                logger.error(f'<img src="{path}" width="800px">', html=True)
+            raise AssertionError(message or str(e))
+
+    @keyword
+    def log_and_fail(self, message, take_screenshot=True):
+        """Log an error message, optionally take a screenshot, and fail the test."""
+        self.log_error(message, take_screenshot)
+        self.builtin.fail(message) 
