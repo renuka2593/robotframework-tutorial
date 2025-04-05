@@ -1,0 +1,237 @@
+{"level":30,"time":"2025-04-05T16:14:56.587Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Listening on 56395"}
+(node:94990) DeprecationWarning: Calling start() is no longer necessary. It can be safely omitted.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"level":30,"time":"2025-04-05T16:14:57.673Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:14:58.029Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding browser to stack: chromium, version: 130.0.6723.31"}
+{"level":30,"time":"2025-04-05T16:14:58.029Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:14:58.029Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-05T16:14:58.033Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newContext"}
+{"level":30,"time":"2025-04-05T16:14:58.033Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:14:58.033Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Trace file: "}
+{"level":30,"time":"2025-04-05T16:14:58.038Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active context"}
+{"level":30,"time":"2025-04-05T16:14:58.038Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newContext"}
+{"level":30,"time":"2025-04-05T16:14:58.040Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-05T16:14:58.041Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:14:58.201Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-05T16:14:58.201Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active page"}
+{"level":30,"time":"2025-04-05T16:14:58.687Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-05T16:14:58.690Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:14:58.690Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with .login_logo in page."}
+{"level":30,"time":"2025-04-05T16:14:58.703Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:14:58.705Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:58.706Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=username] in page."}
+{"level":30,"time":"2025-04-05T16:14:58.723Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:58.726Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:58.726Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=password] in page."}
+{"level":30,"time":"2025-04-05T16:14:58.761Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:58.762Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-05T16:14:58.763Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=login-button] in page."}
+{"level":30,"time":"2025-04-05T16:14:58.807Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method click"}
+{"level":30,"time":"2025-04-05T16:14:58.809Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:14:58.809Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=inventory-container] in page."}
+{"level":30,"time":"2025-04-05T16:14:58.811Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:14:58.813Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method closeAllBrowsers"}
+{"level":30,"time":"2025-04-05T16:14:58.815Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Removed page=e4956e4b-5e1f-42b3-9a88-f7858488d600 from context=b741aa19-02bd-4e1b-ae0c-4193f6355103 page stack"}
+{"level":30,"time":"2025-04-05T16:14:58.845Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method closeAllBrowsers"}
+================= Original suppressed error =================
+Error: Browser has been closed.
+    at PlaywrightState.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:10982:15)
+    at PlaywrightServer.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11598:59)
+    at PlaywrightServer.setTimeout (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11837:57)
+    at Object.onReceiveHalfClose (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server.js:1425:25)
+    at BaseServerInterceptingCall.maybePushNextMessage (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:569:31)
+    at BaseServerInterceptingCall.handleEndEvent (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:609:14)
+    at ServerHttp2Stream.<anonymous> (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:376:18)
+    at ServerHttp2Stream.emit (node:events:519:35)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+=============================================================
+{"level":30,"time":"2025-04-05T16:14:58.848Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:58.848Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:58.850Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:58.850Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:58.852Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:14:58.963Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding browser to stack: chromium, version: 130.0.6723.31"}
+{"level":30,"time":"2025-04-05T16:14:58.963Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:14:58.963Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-05T16:14:58.964Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newContext"}
+{"level":30,"time":"2025-04-05T16:14:58.964Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:14:58.964Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Trace file: "}
+{"level":30,"time":"2025-04-05T16:14:58.966Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active context"}
+{"level":30,"time":"2025-04-05T16:14:58.966Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newContext"}
+{"level":30,"time":"2025-04-05T16:14:58.968Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:14:58.968Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-05T16:14:59.047Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-05T16:14:59.047Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active page"}
+{"level":30,"time":"2025-04-05T16:14:59.469Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-05T16:14:59.471Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:14:59.471Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with .login_logo in page."}
+{"level":30,"time":"2025-04-05T16:14:59.482Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:14:59.485Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:59.485Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=username] in page."}
+{"level":30,"time":"2025-04-05T16:14:59.500Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:59.502Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:59.502Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=password] in page."}
+{"level":30,"time":"2025-04-05T16:14:59.540Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:14:59.542Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-05T16:14:59.542Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=login-button] in page."}
+{"level":30,"time":"2025-04-05T16:14:59.582Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method click"}
+{"level":30,"time":"2025-04-05T16:14:59.584Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getText"}
+{"level":30,"time":"2025-04-05T16:14:59.584Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=error] in page."}
+{"level":30,"time":"2025-04-05T16:14:59.594Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Retrieved text for element [data-test=error] containing Epic sadface: Sorry, this user has been locked out."}
+{"level":30,"time":"2025-04-05T16:14:59.594Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getText"}
+{"level":30,"time":"2025-04-05T16:14:59.595Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method takeScreenshot"}
+{"level":30,"time":"2025-04-05T16:14:59.596Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","Take screenshot with options: ":{"path":"/Users/renuka/Documents/sanjeev/robotframework-best-practices/results/screenshots/error_message.png","fileType":"png","fullPage":false,"timeout":10000,"omitBackground":false}}
+{"level":30,"time":"2025-04-05T16:14:59.662Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method takeScreenshot"}
+{"level":30,"time":"2025-04-05T16:14:59.665Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method closeAllBrowsers"}
+{"level":30,"time":"2025-04-05T16:14:59.666Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Removed page=9fec341e-1033-40a9-aedd-fb4e7e5aae02 from context=93c4c66a-ceb1-4609-9889-a09f01ef8cb3 page stack"}
+{"level":30,"time":"2025-04-05T16:14:59.681Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method closeAllBrowsers"}
+================= Original suppressed error =================
+Error: Browser has been closed.
+    at PlaywrightState.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:10982:15)
+    at PlaywrightServer.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11598:59)
+    at PlaywrightServer.setTimeout (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11837:57)
+    at Object.onReceiveHalfClose (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server.js:1425:25)
+    at BaseServerInterceptingCall.maybePushNextMessage (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:569:31)
+    at BaseServerInterceptingCall.handleEndEvent (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:609:14)
+    at ServerHttp2Stream.<anonymous> (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:376:18)
+    at ServerHttp2Stream.emit (node:events:519:35)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+=============================================================
+{"level":30,"time":"2025-04-05T16:14:59.683Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:59.683Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:59.684Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:59.684Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:14:59.686Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:14:59.804Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding browser to stack: chromium, version: 130.0.6723.31"}
+{"level":30,"time":"2025-04-05T16:14:59.804Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:14:59.804Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-05T16:14:59.806Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newContext"}
+{"level":30,"time":"2025-04-05T16:14:59.806Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:14:59.808Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newContext"}
+{"level":30,"time":"2025-04-05T16:14:59.806Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Trace file: "}
+{"level":30,"time":"2025-04-05T16:14:59.808Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active context"}
+{"level":30,"time":"2025-04-05T16:14:59.810Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-05T16:14:59.810Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:14:59.883Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-05T16:14:59.883Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active page"}
+{"level":30,"time":"2025-04-05T16:15:00.312Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-05T16:15:00.314Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:00.314Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with .login_logo in page."}
+{"level":30,"time":"2025-04-05T16:15:00.325Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:00.326Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:00.326Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=username] in page."}
+{"level":30,"time":"2025-04-05T16:15:00.341Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:00.342Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:00.342Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=password] in page."}
+{"level":30,"time":"2025-04-05T16:15:00.380Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:00.382Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-05T16:15:00.382Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=login-button] in page."}
+{"level":30,"time":"2025-04-05T16:15:00.414Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method click"}
+{"level":30,"time":"2025-04-05T16:15:00.416Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getText"}
+{"level":30,"time":"2025-04-05T16:15:00.416Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=error] in page."}
+{"level":30,"time":"2025-04-05T16:15:00.425Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Retrieved text for element [data-test=error] containing Epic sadface: Username and password do not match any user in this service"}
+{"level":30,"time":"2025-04-05T16:15:00.425Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getText"}
+{"level":30,"time":"2025-04-05T16:15:00.427Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method takeScreenshot"}
+{"level":30,"time":"2025-04-05T16:15:00.427Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","Take screenshot with options: ":{"path":"/Users/renuka/Documents/sanjeev/robotframework-best-practices/results/screenshots/error_message.png","fileType":"png","fullPage":false,"timeout":10000,"omitBackground":false}}
+{"level":30,"time":"2025-04-05T16:15:00.493Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method takeScreenshot"}
+{"level":30,"time":"2025-04-05T16:15:00.495Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method closeAllBrowsers"}
+{"level":30,"time":"2025-04-05T16:15:00.496Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Removed page=d5073544-7e45-4545-8ff8-96eeea521893 from context=2971b764-5e33-4802-837e-1ccccbd97ed0 page stack"}
+{"level":30,"time":"2025-04-05T16:15:00.511Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method closeAllBrowsers"}
+================= Original suppressed error =================
+Error: Browser has been closed.
+    at PlaywrightState.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:10982:15)
+    at PlaywrightServer.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11598:59)
+    at PlaywrightServer.setTimeout (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11837:57)
+    at Object.onReceiveHalfClose (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server.js:1425:25)
+    at BaseServerInterceptingCall.maybePushNextMessage (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:569:31)
+    at BaseServerInterceptingCall.handleEndEvent (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:609:14)
+    at ServerHttp2Stream.<anonymous> (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:376:18)
+    at ServerHttp2Stream.emit (node:events:519:35)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+=============================================================
+{"level":30,"time":"2025-04-05T16:15:00.513Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:15:00.513Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:15:00.514Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:15:00.514Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:15:00.515Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:15:00.637Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding browser to stack: chromium, version: 130.0.6723.31"}
+{"level":30,"time":"2025-04-05T16:15:00.637Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-05T16:15:00.637Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-05T16:15:00.638Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:15:00.638Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Trace file: "}
+{"level":30,"time":"2025-04-05T16:15:00.640Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active context"}
+{"level":30,"time":"2025-04-05T16:15:00.638Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newContext"}
+{"level":30,"time":"2025-04-05T16:15:00.640Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newContext"}
+{"level":30,"time":"2025-04-05T16:15:00.641Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-05T16:15:00.641Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-05T16:15:00.722Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-05T16:15:00.722Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Changed active page"}
+{"level":30,"time":"2025-04-05T16:15:01.203Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-05T16:15:01.206Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:01.206Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with .login_logo in page."}
+{"level":30,"time":"2025-04-05T16:15:01.216Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:01.218Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:01.218Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=username] in page."}
+{"level":30,"time":"2025-04-05T16:15:01.232Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:01.234Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:01.234Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=password] in page."}
+{"level":30,"time":"2025-04-05T16:15:01.269Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method fillText"}
+{"level":30,"time":"2025-04-05T16:15:01.271Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-05T16:15:01.271Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=login-button] in page."}
+{"level":30,"time":"2025-04-05T16:15:01.318Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method click"}
+{"level":30,"time":"2025-04-05T16:15:01.320Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:01.320Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=inventory-container] in page."}
+{"level":30,"time":"2025-04-05T16:15:01.322Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:01.324Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-05T16:15:01.324Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [id=react-burger-menu-btn] in page."}
+{"level":30,"time":"2025-04-05T16:15:01.360Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method click"}
+{"level":30,"time":"2025-04-05T16:15:01.362Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:01.362Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [id=logout_sidebar_link] in page."}
+{"level":30,"time":"2025-04-05T16:15:01.363Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:01.365Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-05T16:15:01.365Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [id=logout_sidebar_link] in page."}
+{"level":30,"time":"2025-04-05T16:15:02.262Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method click"}
+{"level":30,"time":"2025-04-05T16:15:02.265Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:02.265Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with .login_logo in page."}
+{"level":30,"time":"2025-04-05T16:15:02.268Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:02.271Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:02.271Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Strict mode is enabled, find Locator with [data-test=username] in page."}
+{"level":30,"time":"2025-04-05T16:15:02.272Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-05T16:15:02.274Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method closeAllBrowsers"}
+{"level":30,"time":"2025-04-05T16:15:02.276Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Removed page=b5783705-b7c6-47af-a051-ef326626369c from context=b9cf5276-8286-4418-bcca-52f33fd8dfb2 page stack"}
+{"level":30,"time":"2025-04-05T16:15:02.293Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method closeAllBrowsers"}
+================= Original suppressed error =================
+Error: Browser has been closed.
+    at PlaywrightState.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:10982:15)
+    at PlaywrightServer.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11598:59)
+    at PlaywrightServer.setTimeout (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11837:57)
+    at Object.onReceiveHalfClose (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server.js:1425:25)
+    at BaseServerInterceptingCall.maybePushNextMessage (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:569:31)
+    at BaseServerInterceptingCall.handleEndEvent (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:609:14)
+    at ServerHttp2Stream.<anonymous> (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:376:18)
+    at ServerHttp2Stream.emit (node:events:519:35)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+=============================================================
+{"level":30,"time":"2025-04-05T16:15:02.295Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:15:02.295Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+================= Original suppressed error =================
+Error: Browser has been closed.
+    at PlaywrightState.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:10982:15)
+    at PlaywrightServer.getActiveBrowser (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11598:59)
+    at PlaywrightServer.setTimeout (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/index.js:11837:57)
+    at Object.onReceiveHalfClose (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server.js:1425:25)
+    at BaseServerInterceptingCall.maybePushNextMessage (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:569:31)
+    at BaseServerInterceptingCall.handleEndEvent (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:609:14)
+    at ServerHttp2Stream.<anonymous> (/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/Browser/wrapper/node_modules/@grpc/grpc-js/build/src/server-interceptors.js:376:18)
+    at ServerHttp2Stream.emit (node:events:519:35)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+=============================================================
+{"level":30,"time":"2025-04-05T16:15:02.298Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:15:02.298Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2025-04-05T16:15:02.322Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"Start of node method closeAllBrowsers"}
+{"level":30,"time":"2025-04-05T16:15:02.322Z","pid":94990,"hostname":"Renukas-MacBook-Air.local","msg":"End of node method closeAllBrowsers"}
