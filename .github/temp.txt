@@ -16,9 +16,6 @@ assign letter=F
 $partition | Set-Content F:\diskpart.txt
 & diskpart /s F:\diskpart.txt 2>&1
 
-# Download Jenkins slave executable
-Invoke-WebRequest https://github.com/winsw/winsw/releases/download/v2.12.0/WinSW-x64.exe -OutFile C:\jenkins-slave.exe
-
 # Variables for Jenkins agent configuration
 $node_name = "${jenkins_agent_prefix}-$env:COMPUTERNAME"
 $agent_jar_url = "${jenkins_url}/jnlpJars/agent.jar"
@@ -57,12 +54,37 @@ $server.create_node(
     launcher=Jenkins.LAUNCHER_JNLP
 )
 
-# Set up auto-login for the admin user
+# Configure robust autologon that persists across reboots
+# This uses multiple methods to ensure autologon works
+Write-Output "Setting up robust autologon..."
+
+# Clear any existing autologon settings first
 $RegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+Remove-ItemProperty -Path $RegPath -Name "AutoAdminLogon" -ErrorAction SilentlyContinue
+Remove-ItemProperty -Path $RegPath -Name "DefaultUsername" -ErrorAction SilentlyContinue
+Remove-ItemProperty -Path $RegPath -Name "DefaultPassword" -ErrorAction SilentlyContinue
+Remove-ItemProperty -Path $RegPath -Name "DefaultDomainName" -ErrorAction SilentlyContinue
+
+# Primary method - registry entries
 Set-ItemProperty -Path $RegPath -Name "AutoAdminLogon" -Value "1" -Type String -Force
 Set-ItemProperty -Path $RegPath -Name "DefaultUsername" -Value "${admin_username}" -Type String -Force
 Set-ItemProperty -Path $RegPath -Name "DefaultPassword" -Value "${admin_password}" -Type String -Force
 Set-ItemProperty -Path $RegPath -Name "DefaultDomainName" -Value "$env:COMPUTERNAME" -Type String -Force
+Set-ItemProperty -Path $RegPath -Name "ForceAutoLogon" -Value "1" -Type String -Force
+
+# Backup method - netplwiz command-line approach
+$autoLogonUser = @"
+@echo off
+net user "${admin_username}" "${admin_password}"
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /t REG_SZ /d 1 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v DefaultUserName /t REG_SZ /d "${admin_username}" /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v DefaultPassword /t REG_SZ /d "${admin_password}" /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v ForceAutoLogon /t REG_SZ /d 1 /f
+"@
+Set-Content -Path "C:\autologon.cmd" -Value $autoLogonUser -Force
+
+# Run the backup autologon script
+& cmd.exe /c C:\autologon.cmd
 
 # Disable screen saver and sleep settings to prevent interruptions
 powercfg /change standby-timeout-ac 0
@@ -83,76 +105,62 @@ New-Item -Path $jenkins_workspace -ItemType Directory -Force | Out-Null
 $agent_jar_path = Join-Path $jenkins_workspace "agent.jar"
 Invoke-WebRequest -Uri $agent_jar_url -OutFile $agent_jar_path -Credential (New-Object System.Management.Automation.PSCredential ($jenkins_username, (ConvertTo-SecureString $jenkins_token -AsPlainText -Force)))
 
-# Enable interactive session for GUI automation
-# Ensure proper UI rendering and screenshot functionality
-$allow_interact_with_desktop = @"
-[Settings]
-ExeVersion=2.0
-ShowHelp=false
+# Download PsExec for interactive process launching
+$psexec_path = "C:\Windows\System32\PsExec.exe"
+Invoke-WebRequest -Uri "https://download.sysinternals.com/files/PSTools.zip" -OutFile "C:\PSTools.zip"
+Expand-Archive -Path "C:\PSTools.zip" -DestinationPath "C:\PSTools" -Force
+Copy-Item "C:\PSTools\PsExec.exe" -Destination $psexec_path -Force
 
-[Definition]
-Name=RobotAutomation
-Description=Jenkins Robot Framework Agent
-StopTimeout=15 sec
-StopParentProcessFirst=false
-StartMode=Interactive
-Interactive=true
-Priority=Normal
+# Create a direct interactive session launcher script - with reconnection logic
+$interactive_launcher = @"
+@echo off
+REM Force Java process to run in session 0 with UI access
+:reconnect
+echo %DATE% %TIME% - Starting Jenkins agent in interactive mode >> C:\Jenkins\agent.log
+C:\Windows\System32\PsExec.exe -i -s -d java -jar "$agent_jar_path" -jnlpUrl "$agent_jnlp_url" -jnlpCredentials "${jenkins_username}:${jenkins_token}"
+echo %DATE% %TIME% - Agent disconnected, reconnecting in 10 seconds... >> C:\Jenkins\agent.log
+timeout /t 10
+goto reconnect
 "@
-Set-Content -Path "C:\service-config.xml" -Value $allow_interact_with_desktop -Force
+Set-Content -Path "C:\Jenkins\interactive_launcher.cmd" -Value $interactive_launcher -Force
 
-# Create a startup script for the Jenkins agent with enhanced UI interaction
+# Grant special UI permissions for automation
+$ui_access_key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+New-ItemProperty -Path $ui_access_key -Name "EnableUIADesktopToggle" -Value 1 -PropertyType DWord -Force
+New-ItemProperty -Path $ui_access_key -Name "EnableLinkedConnections" -Value 1 -PropertyType DWord -Force
+
+# Create a scheduled task to run the Jenkins agent with SYSTEM privileges and interactive desktop
+# Configuring to run whether user is logged in or not
+$taskAction = New-ScheduledTaskAction -Execute "C:\Windows\System32\cmd.exe" -Argument "/c C:\Jenkins\interactive_launcher.cmd"
+$taskTrigger = New-ScheduledTaskTrigger -AtStartup
+$taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -Hidden:$false -RunOnlyIfNetworkAvailable
+$taskPrincipal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+Register-ScheduledTask -TaskName "JenkinsInteractiveAgent" -Action $taskAction -Trigger $taskTrigger -Settings $taskSettings -Principal $taskPrincipal -Force
+
+# Add startup script to also ensure agent runs on login
+$startup_folder = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
 $startup_script = @"
 @echo off
-REM This runs the Jenkins agent in interactive mode
-cd $jenkins_workspace
-REM Add a slight delay to ensure desktop is fully loaded
-timeout /t 30
-REM Force the process to run in the current interactive session with desktop access
-start "" javaw -jar "$agent_jar_path" -jnlpUrl "$agent_jnlp_url" -jnlpCredentials "${jenkins_username}:${jenkins_token}" -noreconnect
+REM Also start the agent on user login as a backup method
+start "" C:\Jenkins\interactive_launcher.cmd
 "@
-$startup_script_path = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\start_jenkins_agent.bat"
-Set-Content -Path $startup_script_path -Value $startup_script -Force
+Set-Content -Path "$startup_folder\start_jenkins_agent.cmd" -Value $startup_script -Force
 
-# Grant the user proper permissions for UI interaction
-# This ensures the automation has proper access to screen elements
-$policy_key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
-New-ItemProperty -Path $policy_key -Name "EnableUIADesktopToggle" -Value 1 -PropertyType DWord -Force
-New-ItemProperty -Path $policy_key -Name "UIATopLevelHWNDEnabled" -Value 1 -PropertyType DWord -Force
-
-# Create TestComplete-style session switching mechanism to fix black screenshots
-$scripts_dir = "C:\Windows\System32\GroupPolicy\Machine\Scripts\Startup"
-New-Item -Path $scripts_dir -ItemType Directory -Force | Out-Null
-
-# Create session switching script that forces session 0 to console
-$session_switch = @"
-@echo off
-REM Force disconnected session 0 to redirect to console
-tscon 0 /dest:console
-"@
-Set-Content -Path "$scripts_dir\switch_session.cmd" -Value $session_switch -Force
-
-# Create a startup registry entry to run the session switch at system startup
-$startup_key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-New-ItemProperty -Path $startup_key -Name "SessionSwitch" -Value "C:\Windows\System32\cmd.exe /c $scripts_dir\switch_session.cmd" -PropertyType String -Force
-
-# Create a script to ensure Robot Framework tests connect to the interactive session
-$robot_session_fix = @"
-@echo off
-REM Run before each Robot Framework test to ensure proper session
-tscon 0 /dest:console
-timeout /t 3
-"@
-Set-Content -Path "C:\Jenkins\robot_session_fix.cmd" -Value $robot_session_fix -Force
-
-# Create a Robot Framework wrapper script with proper screenshot settings
+# Create a Robot Framework wrapper with enhanced UI access
 $robot_wrapper = @"
 @echo off
-REM Call the session fix first
-call C:\Jenkins\robot_session_fix.cmd
+REM Set special environment variables for UI access
+SET PYTHONUNBUFFERED=1
+SET DISPLAY=0:0
+SET QT_QPA_PLATFORM=windows
 
-REM Run Robot Framework with proper screenshot settings
-robot --variable SCREENSHOT_MODULE:PyWin32 --variable SCREENSHOT_DELAY:1 %*
+REM Log debug info
+echo %DATE% %TIME% - Starting Robot Framework test >> C:\Jenkins\robot.log
+echo Current session: >> C:\Jenkins\robot.log
+query session >> C:\Jenkins\robot.log
+
+REM Run Robot Framework with optimized screenshot settings
+robot --variable SCREENSHOT_MODULE:wx --variable SCREENSHOT_DELAY:1 %*
 "@
 Set-Content -Path "C:\Jenkins\run_robot.cmd" -Value $robot_wrapper -Force
 
@@ -172,6 +180,26 @@ If ((Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyCont
 # Set network profile to Private
 Set-NetConnectionProfile -NetworkCategory Private
 
-# Restart the computer to apply auto-login settings
+# Create an aggressive reboot script to retry autologon
+$reboot_logic = @"
+@echo off
+REM Run this script at first logon
+echo %DATE% %TIME% - First logon reached >> C:\Jenkins\boot.log
+REM Verify autologon is still configured
+reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon >> C:\Jenkins\boot.log
+
+REM Start the Jenkins agent task
+schtasks /run /tn JenkinsInteractiveAgent
+
+REM Force the user to stay logged in
+echo Disabling lock screen and screensaver... >> C:\Jenkins\boot.log
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 0 /f
+"@
+Set-Content -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\first_logon.cmd" -Value $reboot_logic -Force
+
+# Start the interactive Jenkins agent task immediately
+Start-ScheduledTask -TaskName "JenkinsInteractiveAgent"
+
+# Restart the computer to apply autologon settings
 Write-Output "Restarting computer to apply auto-login settings..."
 Restart-Computer -Force 
