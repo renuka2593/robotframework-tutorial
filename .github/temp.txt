@@ -120,6 +120,42 @@ $policy_key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
 New-ItemProperty -Path $policy_key -Name "EnableUIADesktopToggle" -Value 1 -PropertyType DWord -Force
 New-ItemProperty -Path $policy_key -Name "UIATopLevelHWNDEnabled" -Value 1 -PropertyType DWord -Force
 
+# Create TestComplete-style session switching mechanism to fix black screenshots
+$scripts_dir = "C:\Windows\System32\GroupPolicy\Machine\Scripts\Startup"
+New-Item -Path $scripts_dir -ItemType Directory -Force | Out-Null
+
+# Create session switching script that forces session 0 to console
+$session_switch = @"
+@echo off
+REM Force disconnected session 0 to redirect to console
+tscon 0 /dest:console
+"@
+Set-Content -Path "$scripts_dir\switch_session.cmd" -Value $session_switch -Force
+
+# Create a startup registry entry to run the session switch at system startup
+$startup_key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+New-ItemProperty -Path $startup_key -Name "SessionSwitch" -Value "C:\Windows\System32\cmd.exe /c $scripts_dir\switch_session.cmd" -PropertyType String -Force
+
+# Create a script to ensure Robot Framework tests connect to the interactive session
+$robot_session_fix = @"
+@echo off
+REM Run before each Robot Framework test to ensure proper session
+tscon 0 /dest:console
+timeout /t 3
+"@
+Set-Content -Path "C:\Jenkins\robot_session_fix.cmd" -Value $robot_session_fix -Force
+
+# Create a Robot Framework wrapper script with proper screenshot settings
+$robot_wrapper = @"
+@echo off
+REM Call the session fix first
+call C:\Jenkins\robot_session_fix.cmd
+
+REM Run Robot Framework with proper screenshot settings
+robot --variable SCREENSHOT_MODULE:PyWin32 --variable SCREENSHOT_DELAY:1 %*
+"@
+Set-Content -Path "C:\Jenkins\run_robot.cmd" -Value $robot_wrapper -Force
+
 # Enable SSH capability
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Start-Service sshd
