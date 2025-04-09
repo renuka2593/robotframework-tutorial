@@ -1,0 +1,58 @@
+import { test, expect } from "@playwright/test";
+import * as readline from "readline";
+
+// Function to get user input
+async function getUserInput(prompt: string): Promise<string> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(prompt, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
+
+test("login with OTP verification", async ({ page }) => {
+  try {
+    // Navigate to the login page (replace with your actual login URL)
+    await page.goto("https://your-login-page.com");
+
+    // Enter username
+    await page.fill("#username", "your_username");
+
+    // Enter password
+    await page.fill("#password", "your_password");
+
+    // Click login button
+    await page.click("#login-button");
+
+    // Wait for verification code to be sent
+    console.log(
+      "Verification code has been sent to your registered email/phone"
+    );
+
+    // Wait for user to input OTP
+    const otp = await getUserInput("Please enter the OTP received: ");
+
+    // Enter OTP
+    await page.fill("#otp-input", otp);
+
+    // Click verify button
+    await page.click("#verify-button");
+
+    // Wait for successful login
+    try {
+      // Wait for an element that indicates successful login
+      await page.waitForSelector("#dashboard", { timeout: 10000 });
+      console.log("Login successful!");
+    } catch (error) {
+      console.log("Login failed or timed out");
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
+});
