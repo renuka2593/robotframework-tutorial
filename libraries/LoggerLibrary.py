@@ -8,6 +8,7 @@ Robot Framework library for enhanced logging, assertions and screenshots.
 import os
 import time
 import base64
+import pyautogui
 from datetime import datetime
 from robot.api import logger
 from robot.api.deco import keyword
@@ -96,12 +97,10 @@ class LoggerLibrary:
             timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
             filename = f"screenshot_{timestamp}"
             
-        # Get Browser library instance
-        browser = BuiltIn().get_library_instance('Browser')
-        
-        # Take screenshot with Browser library
+        # Take screenshot with PyAutoGUI (full screen)
         fullpath = os.path.join(self._screenshot_dir, f"{filename}.png")
-        browser.take_screenshot(filename=fullpath)
+        screenshot = pyautogui.screenshot()
+        screenshot.save(fullpath)
         
         # Embed in log
         if os.path.exists(fullpath):

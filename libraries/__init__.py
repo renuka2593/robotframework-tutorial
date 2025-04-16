@@ -1,1 +1,2 @@
-"""Robot Framework custom libraries package.""" 
+"""Robot Framework custom libraries package."""
+from libraries.EnvLibrary import EnvLibrary 
