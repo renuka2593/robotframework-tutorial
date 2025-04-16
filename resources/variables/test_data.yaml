@@ -1,0 +1,79 @@
+# Test data for Robot Framework tests
+# This file contains various test data like user credentials, product information, etc.
+
+# User credentials
+users:
+  standard_user:
+    username: standard_user
+    password: secret_sauce
+    full_name: Standard User
+    email: standard@example.com
+
+  admin_user:
+    username: admin
+    password: admin123
+    full_name: Admin User
+    email: admin@example.com
+
+  locked_out_user:
+    username: locked_out_user
+    password: secret_sauce
+    full_name: Locked Out User
+    email: locked@example.com
+
+# Product information
+products:
+  product1:
+    id: 1
+    name: Product One
+    price: 29.99
+    description: This is the first product
+    category: category1
+
+  product2:
+    id: 2
+    name: Product Two
+    price: 39.99
+    description: This is the second product
+    category: category2
+
+  product3:
+    id: 3
+    name: Product Three
+    price: 49.99
+    description: This is the third product
+    category: category3
+
+# API test data
+api_test_data:
+  valid_order:
+    customer_id: 12345
+    items:
+      - product_id: 1
+        quantity: 2
+      - product_id: 3
+        quantity: 1
+    shipping_address:
+      street: 123 Test Street
+      city: Test City
+      state: Test State
+      zip: 12345
+    payment_method: credit_card
+
+  invalid_order:
+    customer_id: 12345
+    items: []
+    shipping_address:
+      street: 123 Test Street
+      city: Test City
+      state: Test State
+      zip: 12345
+    payment_method: unknown
+
+# Test environment settings
+environment:
+  browser: chrome
+  headless: true
+  timeout: 30
+  screenshot_dir: ${OUTPUT_DIR}/screenshots
+  retry_attempts: 3
